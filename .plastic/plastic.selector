@@ -1,0 +1,4 @@
+repository "Everlasting@danribeirosoaressilva@cloud"
+  path "/"
+    br "/main"
+    co "/main"
