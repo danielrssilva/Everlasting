@@ -81,9 +81,9 @@ public class RoguelikeManager : MonoBehaviour
             {
                 rewards.Add(GetRandomDestinationReward());
             }
-            GameObject newDestination = new GameObject();
-            newDestination.AddComponent(typeof(Destination));
-            Destination destination = newDestination.GetComponent<Destination>();
+            // GameObject newDestination = new GameObject();
+            // newDestination.AddComponent(typeof(Destination));
+            Destination destination = new Destination();
             destination.SetData(9f, "// Destination " + i, "23.5558", "46.6396", rewards, new List<ExtraRewardData>());
             NextDestinations.Add(destination);
         }
@@ -92,7 +92,6 @@ public class RoguelikeManager : MonoBehaviour
         {
             destinationPrefab.Init(destination);
         }
-        //Stops = GenerateRandomStops();
     }
 
     public void ChooseDestination(Destination destination)
@@ -136,9 +135,9 @@ public class RoguelikeManager : MonoBehaviour
 
     public Reward GetRandomStopReward()
     {
-        GameObject newReward = new GameObject();
-        newReward.AddComponent(typeof(Reward));
-        Reward reward = newReward.GetComponent<Reward>();
+        // GameObject newReward = new GameObject();
+        // newReward.AddComponent(typeof(Reward));
+        Reward reward = new Reward();
         // Destroy(newReward);
 
         RewardType rewardType = RewardType.CART;
@@ -160,9 +159,9 @@ public class RoguelikeManager : MonoBehaviour
 
     public Reward GetRandomDestinationReward()
     {
-        GameObject newReward = new GameObject();
-        newReward.AddComponent(typeof(Reward));
-        Reward reward = newReward.GetComponent<Reward>();
+        // GameObject newReward = new GameObject();
+        // newReward.AddComponent(typeof(Reward));
+        Reward reward = new Reward();
         // Destroy(newReward);
 
         RewardType rewardType = RewardType.CART;
@@ -173,15 +172,15 @@ public class RoguelikeManager : MonoBehaviour
         {
             case 1:
                 rewardType = RewardType.MAX_ENERGY;
-                rewardValue = Random.Range(0.1f, 1f);
+                rewardValue = Random.Range(0.1f, 0.2f);
                 break;
             case 2:
                 rewardType = RewardType.ENERGY;
-                rewardValue = Random.Range(0.1f, 1.3f);
+                rewardValue = Random.Range(0.1f, 1f);
                 break;
             case 3:
                 rewardType = RewardType.MAX_FOOD;
-                rewardValue = Random.Range(0.1f, 0.5f);
+                rewardValue = Random.Range(0.1f, 0.2f);
                 break;
             case 4:
                 rewardType = RewardType.FOOD;
