@@ -7,7 +7,7 @@ public class StopTooltipTrigger : MonoBehaviour
 {
     private Stop stop;
 
-    public void SetTooltipTrigger(Stop stop)
+    public void SetStop(Stop stop)
     {
         this.stop = stop;
     }

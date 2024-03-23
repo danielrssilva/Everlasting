@@ -10,10 +10,11 @@ public class DestinationTooltip : MonoBehaviour
 
     public RectTransform rectTransform;
     public GameObject rewardsContainer;
-    public GameObject extraRewardsContainer;
     public Reward reward;
     public ExtraReward extraReward;
-    public GameObject extraRewardRenderer;
+    public ExtraReward penalty;
+    public DestinationWeather weatherChange;
+    public ExtraDataContainer extraDataContainer;
 
     public TMP_Text destinationName;
     public TMP_Text eta;
@@ -21,16 +22,15 @@ public class DestinationTooltip : MonoBehaviour
     public TMP_Text dd;
     public TMP_Text dms;
 
-    private List<Reward> instantiatedRewards;
-    private List<ExtraReward> instantiatedExtraRewards;
+    private Destination destination;
 
-    public void SetData()
+    public void SetData(Destination _destination)
     {
         // Populate data
-        destinationName.SetText(RoguelikeManager.Instance.CurrentDestination.placeName);
-        eta.SetText(string.Format("{0:N0}", RoguelikeManager.Instance.CurrentDestination.eta));
-        dd.SetText(RoguelikeManager.Instance.CurrentDestination.dd + "º S");
-        dms.SetText(RoguelikeManager.Instance.CurrentDestination.dms + "º W");
+        destinationName.SetText(_destination.placeName);
+        eta.SetText(string.Format("{0:N0}", _destination.eta));
+        dd.SetText(string.Format("{0:##.####} º S", _destination.dd));
+        dms.SetText(string.Format("{0:##.####} º W", _destination.dms));
 
         // Determine position
         Vector2 position = Input.mousePosition;
@@ -41,32 +41,54 @@ public class DestinationTooltip : MonoBehaviour
 
         rectTransform.pivot = new Vector2(pivotX, pivotY);
         transform.position = position;
-    }
 
+        destination = _destination;
 
-
-    void Awake()
-    {
-        instantiatedRewards = new List<Reward>();
-        instantiatedExtraRewards = new List<ExtraReward>();
-        // Render rewards
-        foreach (Reward _reward in RoguelikeManager.Instance.CurrentDestination.rewards)
+        // Render rewards   
+        foreach (Transform child in rewardsContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Reward _reward in destination.rewards)
         {
             reward.SetData(_reward.value, _reward.type);
-            Reward instantiatedReward = Instantiate(reward, rewardsContainer.transform);
-            instantiatedRewards.Add(instantiatedReward);
+            Instantiate(reward, rewardsContainer.transform);
         }
+
         // Render extra rewards
-        if (RoguelikeManager.Instance.CurrentDestination.extraRewards.Count > 0)
+        if (destination.extraRewards.Count > 0)
         {
-            extraRewardRenderer.SetActive(true);
-            foreach (ExtraRewardData _extraReward in RoguelikeManager.Instance.CurrentDestination.extraRewards)
+            extraDataContainer.SetData("Extra Rewards");
+            ExtraDataContainer instantiatedExtraDataContainer = Instantiate(extraDataContainer, rewardsContainer.transform);
+            foreach (ExtraRewardData _extraReward in destination.extraRewards)
             {
                 extraReward.SetData(_extraReward.label);
-                Instantiate(extraReward, extraRewardsContainer.transform);
+                Instantiate(extraReward, instantiatedExtraDataContainer.rewardsContainer.transform);
+            }
+        }
+        // Render Penalties
+        if (destination.penalties.Count > 0)
+        {
+            extraDataContainer.SetData("Penalties");
+            ExtraDataContainer instantiatedExtraDataContainer = Instantiate(extraDataContainer, rewardsContainer.transform);
+            foreach (DestinationPenaltyData _penalty in destination.penalties)
+            {
+                penalty.SetData(_penalty.label);
+                Instantiate(penalty, instantiatedExtraDataContainer.rewardsContainer.transform);
+            }
+
+        }
+        // Render Weather changes
+        if (destination.weatherChanges.Count > 0)
+        {
+            extraDataContainer.SetData("Weather changes");
+            ExtraDataContainer instantiatedExtraDataContainer = Instantiate(extraDataContainer, rewardsContainer.transform);
+            foreach (DestinationWeatherData _weatherChange in destination.weatherChanges)
+            {
+                weatherChange.SetData(_weatherChange);
+                Instantiate(weatherChange, instantiatedExtraDataContainer.rewardsContainer.transform);
             }
 
         }
     }
-
 }

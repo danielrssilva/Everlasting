@@ -56,7 +56,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Stop\StopTile.cs" />
+    <Compile Include="Assets\Scripts\Stop\DestinationPenaltyData.cs" />
+    <Compile Include="Assets\Scripts\DecoupleModal.cs" />
     <Compile Include="Assets\Scripts\Reward.cs" />
+    <Compile Include="Assets\Scripts\TutorialCartData.cs" />
+    <Compile Include="Assets\Scripts\Stop\DestinationWeatherData.cs" />
     <Compile Include="Assets\Scripts\Stop\Stop.cs" />
     <Compile Include="Assets\Scripts\CartManager\ManagerModalTrigger.cs" />
     <Compile Include="Assets\Scripts\Stop\Destination Trigger.cs" />
@@ -67,6 +71,8 @@
     <Compile Include="Assets\Scripts\TileScripts\TileManager.cs" />
     <Compile Include="Assets\Scripts\CartManager\ManagerModalSystem.cs" />
     <Compile Include="Assets\Scripts\CartManager\ManagerModal.cs" />
+    <Compile Include="Assets\Scripts\ExtraDataContainer.cs" />
+    <Compile Include="Assets\DestinationWeather.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\CartManager\CartManager.cs" />
     <Compile Include="Assets\Scripts\Stop\Destination.cs" />
@@ -75,13 +81,14 @@
     <Compile Include="Assets\Scripts\Stop\Destination Tooltip.cs" />
     <Compile Include="Assets\Scripts\StopTooltip\StopTooltipSystem.cs" />
     <Compile Include="Assets\Scripts\Stop\ExtraRewardData.cs" />
+    <Compile Include="Assets\Scripts\TutorialModalManager.cs" />
     <Compile Include="Assets\Scripts\Updaters\StopUpdater.cs" />
     <Compile Include="Assets\Scripts\DragDrop.cs" />
+    <Compile Include="Assets\Scripts\DestinationOption.cs" />
     <Compile Include="Assets\Scripts\Updaters\HudManager.cs" />
     <Compile Include="Assets\Scripts\RoguelikeManager.cs" />
     <Compile Include="Assets\Scripts\StopTooltip\StopTooltip.cs" />
     <Compile Include="Assets\Scripts\TrainScripts\CartManufacturer.cs" />
-    <Compile Include="Assets\DestinationOption.cs" />
     <Compile Include="Assets\Scripts\CartManager\CartInfo.cs" />
     <Compile Include="Assets\Scripts\StopTooltip\StopTooltipTrigger.cs" />
     <Compile Include="Assets\Scripts\Stop\ExtraReward.cs" />

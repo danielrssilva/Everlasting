@@ -16,25 +16,26 @@ public class TrainManager : MonoBehaviour
     public float kwPerKmPerS = 0.01f;
     public float trackSpeedModifier = 0f;
     public float destinationsSpeedModifier = 0.05f;
-    //public float engineSpeedModifier = 0f;
 
     [Header("Energy stats")]
     public float energyStorage = 8f;
     public float minimumEnergyStorage = -2f;
     public float reactorOutput = 1.8f;
+    public float farmFoodProductionEnergyCost = 0.05f;
     public float batteryModifier = 1f;
     public float startingEnergy = 5f;
-    public float trackEnergyModifier = 0f;
+    public float engineEnergyModifier = 1f;
     public float stopsEnergyStorageModifier = 0f;
-    //public float engineEnergyModifier = 0f;
 
     [Header("Food stats")]
     public float foodStorage = 1f;
     public float minimumFoodStorage = -1f;
     public float startingFood = 0.6f;
     public float farmOutput = 0.3f;
-    public float farmValueAtMaxWorkers = 1.1f;
+    public float farmValueAtMaxWorkers = 0.1f;
     public float stopsFoodStorageModifier = 0f;
+    public float farmStorageModifier = 0.1f;
+    public float engineFoodModifier = 1f;
 
     [Header("GameOver stats")]
     public int maxPassengers = 0;
@@ -80,9 +81,9 @@ public class TrainManager : MonoBehaviour
     public float farmManufactureEnergyCost = 0.2f;
     public float farmManufactureCostIncrease = 0.15f;
 
-    public float housingManufactureFoodCost = 0.2f;
-    public float housingManufactureEnergyCost = 0.5f;
-    public float housingManufactureCostIncrease = 0.2f;
+    public float housingManufactureFoodCost = 0f;
+    public float housingManufactureEnergyCost = 0.1f;
+    public float housingManufactureCostIncrease = 0.4f;
 
     public float reactorManufactureFoodCost = 0.2f;
     public float reactorManufactureEnergyCost = 0.8f;
@@ -99,10 +100,16 @@ public class TrainManager : MonoBehaviour
     public float seconds = 0;
     public float timeCount = 0;
 
+    [Header("Carts manufacture stats")]
+    public float weatherFoodModifier = 1f;
+    public float weatherEnergyModifier = 1f;
+
     [Header("Objects")]
     public GameObject GameOverContainer;
+    public DecoupleModal decoupleModal;
 
-    private int cartsTotal = 0;
+    public int cartsTotal = 0;
+    private List<Cart> carts;
     private List<Cart> farms;
     private List<Cart> housingUnits;
     private List<Cart> reactors;
@@ -173,10 +180,17 @@ public class TrainManager : MonoBehaviour
         reactors = new List<Cart>();
         batteries = new List<Cart>();
         extraEngines = new List<Cart>();
+        carts = new List<Cart>();
     }
 
     void Update()
     {
+        farms = GetFarms();
+        housingUnits = GetHousingUnits();
+        reactors = GetReactors();
+        batteries = GetBatteries();
+        extraEngines = GetExtraEngines();
+        cartsTotal = carts.Count;
         if (CurrentSpeed <= minimumSpeed)
         {
             TimePaused = true;
@@ -197,11 +211,56 @@ public class TrainManager : MonoBehaviour
         {
             CurrentUnemployable = CurrentPassenger - 5 * housingUnits.Count;
         }
-        
+
+        if (CurrentSpeed > maxSpeed)
+        {
+            maxSpeed = CurrentSpeed;
+        }
+
+        if (GetEnergyProduction() > maxFoodProduction)
+        {
+            maxFoodProduction = GetEnergyProduction();
+        }
+
+        if (GetFoodProduction() > maxEnergyProduction)
+        {
+            maxEnergyProduction = GetFoodProduction();
+        }
+        if (CurrentPassenger < 0)
+        {
+            CurrentPassenger = 0;
+        }
+
+        if (RoguelikeManager.Instance.CurrentDestination.weatherChanges.Count > 0)
+        {
+            foreach (DestinationWeatherData weatherChange in RoguelikeManager.Instance.CurrentDestination.weatherChanges)
+            {
+                switch (weatherChange.type)
+                {
+                    case DestinationWeatherType.FOOD:
+                        weatherFoodModifier = weatherChange.value;
+                        break;
+                    default:
+                        weatherEnergyModifier = weatherChange.value;
+                        break;
+                }
+            }
+        }
+        else
+        {
+            weatherFoodModifier = 1f;
+            weatherEnergyModifier = 1f;
+        }
+
         if (TimePaused)
         {
             return;
         }
+        if (RoguelikeManager.Instance.CurrentDestination.penalties.Count > 0)
+        {
+            DisableLastCarts(2);
+        }
+        AutoAddPassengerHousing();
         timeCount = Time.deltaTime;
         if (FastForward)
         {
@@ -226,10 +285,6 @@ public class TrainManager : MonoBehaviour
         CurrentExtraEngineFoodCost = extraEngineManufactureFoodCost + extraEngineManufactureCostIncrease * extraEngines.Count;
         CurrentExtraEngineEnergyCost = extraEngineManufactureEnergyCost + extraEngineManufactureCostIncrease * extraEngines.Count;
 
-        if (CurrentSpeed > maxSpeed)
-        {
-            maxSpeed = CurrentSpeed;
-        }
         if (CurrentEnergy < CurrentEnergyStorage || GetEnergyProduction() < 0)
         {
             CurrentEnergy += GetEnergyProduction() * timeCount;
@@ -296,9 +351,14 @@ public class TrainManager : MonoBehaviour
     }
 
     // Cart controllers
-    public void AddEmptyCart()
+    public void AddEmptyCart(Cart cart)
     {
-        cartsTotal++;
+        if (cartsTotal == 0 && cartsDecoupled == 0)
+        {
+            Pause();
+            TutorialModalManager.Instance.RenderCartTutorial();
+        }
+        carts.Add(cart);
         AutoAssignWorkers();
     }
 
@@ -320,26 +380,66 @@ public class TrainManager : MonoBehaviour
 
     public List<Cart> GetFarms()
     {
+        List<Cart> farms = new List<Cart>();
+        foreach (Cart cart in carts)
+        {
+            if (cart.info.type == CartType.FARM)
+            {
+                farms.Add(cart);
+            }
+        }
         return farms;
     }
 
     public List<Cart> GetHousingUnits()
     {
-        return housingUnits;
+        List<Cart> housing = new List<Cart>();
+        foreach (Cart cart in carts)
+        {
+            if (cart.info.type == CartType.HOUSING)
+            {
+                housing.Add(cart);
+            }
+        }
+        return housing;
     }
 
     public List<Cart> GetReactors()
     {
+        List<Cart> reactors = new List<Cart>();
+        foreach (Cart cart in carts)
+        {
+            if (cart.info.type == CartType.REACTOR)
+            {
+                reactors.Add(cart);
+            }
+        }
         return reactors;
     }
 
     public List<Cart> GetBatteries()
     {
+        List<Cart> batteries = new List<Cart>();
+        foreach (Cart cart in carts)
+        {
+            if (cart.info.type == CartType.BATTERY)
+            {
+                batteries.Add(cart);
+            }
+        }
         return batteries;
     }
 
     public List<Cart> GetExtraEngines()
     {
+        List<Cart> extraEngines = new List<Cart>();
+        foreach (Cart cart in carts)
+        {
+            if (cart.info.type == CartType.EXTRA_ENGINE)
+            {
+                extraEngines.Add(cart);
+            }
+        }
         return extraEngines;
     }
 
@@ -359,9 +459,9 @@ public class TrainManager : MonoBehaviour
     public int GetCurrentActiveFarmWorkers()
     {
         int count = 0;
-        foreach (Cart _farm in farms)
+        foreach (Cart cart in farms)
         {
-            count += _farm.activeWorkers;
+            count += cart.activeWorkers;
         }
         return count;
     }
@@ -408,6 +508,21 @@ public class TrainManager : MonoBehaviour
             }
         }
     }
+
+    public void AutoAddPassengerHousing()
+    {
+        int toBeHoused = CurrentUnemployed + CurrentWorkers;
+        foreach (Cart _housing in housingUnits)
+        {
+            toBeHoused -= _housing.activeWorkers;
+            while (_housing.activeWorkers < _housing.maxWorkers && toBeHoused > 0)
+            {
+                toBeHoused--;
+                _housing.activeWorkers++;
+            }
+        }
+    }
+
     public void RemoveDeadWorker()
     {
         foreach (Cart _farm in farms)
@@ -445,12 +560,25 @@ public class TrainManager : MonoBehaviour
             {
                 if (_farm.activeWorkers == farmWorkersCapacityPerCart)
                 {
-                    output += 0.1f;
+                    output += farmValueAtMaxWorkers;
                 }
                 output += farmOutput * _farm.activeWorkers;
             }
         }
         return output;
+    }
+
+    public float GetActiveFarmCount()
+    {
+        int count = 0;
+        foreach (Cart _farm in farms)
+        {
+            if (!_farm.isDisabled && _farm.activeWorkers > 0)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     public float GetReactorsOutputProduction()
@@ -481,7 +609,7 @@ public class TrainManager : MonoBehaviour
 
     public float GetFoodProduction()
     {
-        float totalFoodProduction = GetFarmsOutputProduction();
+        float totalFoodProduction = GetFarmsOutputProduction() * weatherFoodModifier;
         float totalFoodConsumption = passengerFoodConsumption * CurrentPassenger;
 
         return totalFoodProduction - totalFoodConsumption;
@@ -489,8 +617,8 @@ public class TrainManager : MonoBehaviour
 
     public float GetEnergyProduction()
     {
-        float energyProduction = kwPerKmPerS * CurrentSpeed + GetReactorsOutputProduction();
-        float totalEnergyConsumption = cartsEnergyConsumption * cartsTotal + cartsEnergyConsumption * batteries.Count;//extraEngineEnergyConsumption * extraEngines.Count
+        float energyProduction = (kwPerKmPerS * extraEngines.Count + kwPerKmPerS * CurrentSpeed + GetReactorsOutputProduction() - GetActiveFarmCount() * farmFoodProductionEnergyCost) * weatherEnergyModifier;
+        float totalEnergyConsumption = cartsEnergyConsumption * cartsTotal + cartsEnergyConsumption * batteries.Count; // extraEngineEnergyConsumption * extraEngines.Count
 
         return energyProduction - totalEnergyConsumption;
     }
@@ -503,7 +631,7 @@ public class TrainManager : MonoBehaviour
     // Storages
     public float GetFoodStorage()
     {
-        return foodStorage + 0.1f * farms.Count + stopsFoodStorageModifier;
+        return foodStorage + farmStorageModifier * farms.Count + stopsFoodStorageModifier;
     }
 
     public float GetEnergyStorage()
@@ -527,7 +655,7 @@ public class TrainManager : MonoBehaviour
                 CurrentEnergy -= CurrentFarmEnergyCost;
                 return true;
             case CartType.HOUSING:
-                if (CurrentHousingFoodCost > CurrentFood || CurrentHousingEnergyCost > CurrentEnergy) { return false; }
+                if ((CurrentHousingFoodCost > 0 && CurrentHousingFoodCost > CurrentFood) || CurrentHousingEnergyCost > CurrentEnergy) { return false; }
                 CurrentEnergy -= CurrentHousingEnergyCost;
                 CurrentFood -= CurrentHousingFoodCost;
                 return true;
@@ -551,57 +679,45 @@ public class TrainManager : MonoBehaviour
         }
     }
 
-    public void RemoveManufacturedCart(Cart cart, CartInfo cartInfo)
-    {
-        if (cartInfo.type != CartType.EMPTY)
-        {
-            cart.activeWorkers = 0;
-            switch (cartInfo.type)
-            {
-                case CartType.FARM:
-                    farms.RemoveAt(0);
-                    break;
-                case CartType.HOUSING:
-                    housingUnits.RemoveAt(0);
-                    break;
-                case CartType.REACTOR:
-                    reactors.RemoveAt(0);
-                    break;
-                case CartType.BATTERY:
-                    batteries.RemoveAt(0);
-                    break;
-                case CartType.EXTRA_ENGINE:
-                    extraEngines.RemoveAt(0);
-                    break;
-                default:
-                    break;
-            }
-        }
-        AutoAssignWorkers();
-    }
     public void ManufactureCart(Cart cart)
     {
-        switch (cart.info.type)
-        {
-            case CartType.FARM:
-                farms.Add(cart);
-                break;
-            case CartType.HOUSING:
-                housingUnits.Add(cart);
-                break;
-            case CartType.REACTOR:
-                reactors.Add(cart);
-                break;
-            case CartType.BATTERY:
-                batteries.Add(cart);
-                break;
-            case CartType.EXTRA_ENGINE:
-                extraEngines.Add(cart);
-                break;
-            default:
-                break;
-        }
+        carts[cart.cartNumber] = cart;
         AutoAssignWorkers();
+    }
+
+    public void HandleDecouple(int cartNumber)
+    {
+        int cartsToDecouple = 0;
+        int passengerCount = 0;
+        foreach (Cart cart in carts)
+        {
+            if (cart.cartNumber >= cartNumber)
+            {
+                if (cart.info.type == CartType.HOUSING)
+                {
+                    passengerCount += cart.activeWorkers;
+                }
+                cartsToDecouple++;
+            }
+        }
+        decoupleModal.SetData(cartsToDecouple, passengerCount, cartNumber);
+    }
+
+    public void ConfirmDecouple(bool keepPassengers, int passengerCount, int cartCount, int cartNumber)
+    {
+        cartsDecoupled += cartCount;
+        foreach (Cart cart in carts)
+        {
+            if (cart.cartNumber >= cartNumber)
+            {
+                Destroy(cart.gameObject);
+            }
+        }
+        if (!keepPassengers)
+        {
+            CurrentPassenger -= passengerCount;
+        }
+        carts.RemoveAll(cart => cart.cartNumber >= cartNumber);
     }
 
     public void Retry()
@@ -617,25 +733,26 @@ public class TrainManager : MonoBehaviour
 
     public void ClaimStopReward(Stop stop)
     {
+        placesVisited++;
         stop.visited = true;
         foreach (Reward reward in stop.rewards)
         {
             switch (reward.type)
             {
                 case RewardType.MAX_ENERGY:
-                    TrainManager.Instance.stopsEnergyStorageModifier += float.Parse(reward.value);
+                    stopsEnergyStorageModifier += reward.value;
                     break;
                 case RewardType.ENERGY:
-                    TrainManager.Instance.CurrentEnergy += float.Parse(reward.value);
+                    CurrentEnergy += reward.value;
                     break;
                 case RewardType.MAX_FOOD:
-                    TrainManager.Instance.stopsFoodStorageModifier += float.Parse(reward.value);
+                    stopsFoodStorageModifier += reward.value;
                     break;
                 case RewardType.FOOD:
-                    TrainManager.Instance.CurrentFood += float.Parse(reward.value);
+                    CurrentFood += reward.value;
                     break;
                 case RewardType.PASSENGER:
-                    TrainManager.Instance.CurrentPassenger += int.Parse(reward.value);
+                    CurrentPassenger += (int)reward.value;
                     break;
                 case RewardType.CART:
                     CartManager.Instance.SpawnCart();
@@ -652,25 +769,40 @@ public class TrainManager : MonoBehaviour
             switch (reward.type)
             {
                 case RewardType.MAX_ENERGY:
-                    stopsEnergyStorageModifier += float.Parse(reward.value);
+                    stopsEnergyStorageModifier += reward.value;
                     break;
                 case RewardType.ENERGY:
-                    CurrentEnergy += float.Parse(reward.value);
+                    CurrentEnergy += reward.value;
                     break;
                 case RewardType.MAX_FOOD:
-                    stopsFoodStorageModifier += float.Parse(reward.value);
+                    stopsFoodStorageModifier += reward.value;
                     break;
                 case RewardType.FOOD:
-                    CurrentFood += float.Parse(reward.value);
+                    CurrentFood += reward.value;
                     break;
                 case RewardType.PASSENGER:
-                    CurrentPassenger += int.Parse(reward.value);
+                    CurrentPassenger += (int)reward.value;
                     break;
                 case RewardType.CART:
                     CartManager.Instance.SpawnCart();
                     break;
                 default:
                     break;
+            }
+        }
+    }
+
+    public void DisableLastCarts(int count)
+    {
+        foreach (Cart cart in carts)
+        {
+            if (cart.cartNumber + count >= carts.Count)
+            {
+                cart.isDisabled = true;
+            }
+            else if (!cart.canBeDisabled)
+            {
+                cart.isDisabled = false;
             }
         }
     }

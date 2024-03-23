@@ -19,7 +19,7 @@ public class RewardPrefabData : MonoBehaviour
     void Awake()
     {
         label.SetText(reward.type.ToString());
-        value.SetText(reward.value);
+        value.SetText(string.Format("{0:0.##}", reward.value));
         valueLabel.sprite = energySprite;
         switch (reward.type)
         {

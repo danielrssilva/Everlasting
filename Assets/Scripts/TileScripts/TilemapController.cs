@@ -38,7 +38,7 @@ public class TilemapController : MonoBehaviour
             Destroy(o);
             if (stopTile != null)
             {
-                stopTooltipTrigger.SetTooltipTrigger(stopTile.stop);
+                stopTooltipTrigger.SetStop(stopTile.stop);
                 stopTooltipTrigger.Show();
                 if (Input.GetMouseButtonDown(0) && !stopTile.stop.visited)
                 {
@@ -48,6 +48,7 @@ public class TilemapController : MonoBehaviour
             }
             if (destinationTile != null)
             {
+                destinationTooltipTrigger.SetDestination(destinationTile.destination);
                 destinationTooltipTrigger.Show();
                 if (Input.GetMouseButtonDown(0))
                 {

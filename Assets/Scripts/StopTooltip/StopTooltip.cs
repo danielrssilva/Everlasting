@@ -12,14 +12,17 @@ public class StopTooltip : MonoBehaviour
 
     public TMP_Text stopName;
     public TMP_Text reward;
-    public TMP_Text rewardLabel;
     public TMP_Text eta;
     public Image backgroundImage;
+    public Image icon;
+
     public Sprite visited;
     public Sprite cart;
     public Sprite passenger;
 
-    public GameObject visitedLabelText;
+    public Sprite passengerIcon;
+    public Sprite cartIcon;
+    public Sprite visitedIcon;
 
     public void SetData(Stop stop)
     {
@@ -28,19 +31,14 @@ public class StopTooltip : MonoBehaviour
         {
             case RewardType.PASSENGER:
                 backgroundImage.sprite = passenger;
+                icon.sprite = passengerIcon;
                 break;
             case RewardType.CART:
                 backgroundImage.sprite = cart;
+                icon.sprite = cartIcon;
                 break;
             default:
                 break;
-        }
-        visitedLabelText.SetActive(false);
-
-        if (stop.visited)
-        {
-            backgroundImage.sprite = visited;
-            visitedLabelText.SetActive(true);
         }
 
         // Populate data
@@ -48,8 +46,13 @@ public class StopTooltip : MonoBehaviour
         eta.SetText(string.Format("{0:N0}", stop.eta));
 
         // [INFO] Change if the reward becomes more than one!!
-        reward.SetText(string.Format("{0:N0}", stop.rewards[0].value));
-        rewardLabel.SetText(stop.rewards[0].type.ToString());
+        reward.SetText(string.Format("{0:N0} " + stop.rewards[0].type.ToString(), stop.rewards[0].value));
+        if (stop.visited)
+        {
+            reward.SetText(string.Format("Visited <size=7>[{0:N0} " + stop.rewards[0].type.ToString() + "]</size>", stop.rewards[0].value));
+            icon.sprite = visitedIcon;
+            backgroundImage.sprite = visited;
+        }
         // Determine position
         Vector2 position = Input.mousePosition;
 

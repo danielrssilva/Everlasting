@@ -17,18 +17,21 @@ public class Cart : MonoBehaviour
     public int activeWorkers = 0;
     public int maxWorkers = 0;
 
+    public int cartNumber;
+
     public void Init()
     {
         info = (CartInfo)CartInfo.CreateInstance(typeof(CartInfo));
         timer = info.time;
+        cartNumber = TrainManager.Instance.cartsTotal;
     }
 
+    public void SetCartNumber(int number)
+    {
+        cartNumber = number;
+    }
     public void SetData(CartInfo _info)
     {
-        if (!isBuilding)
-        {
-            TrainManager.Instance.RemoveManufacturedCart(this, info);
-        }
         typeDisplay.SetText(_info.type.ToString());
         timer = _info.time;
         info = _info;
@@ -79,6 +82,10 @@ public class Cart : MonoBehaviour
             {
                 maxWorkers = 3;
             }
+            if (info.type == CartType.HOUSING)
+            {
+                maxWorkers = 5;
+            }
             if (info.type == CartType.EXTRA_ENGINE)
             {
                 maxWorkers = 2;
@@ -94,6 +101,6 @@ public class Cart : MonoBehaviour
 
     public void DestroyThisObject()
     {
-        Destroy(gameObject);
+        TrainManager.Instance.HandleDecouple(cartNumber);
     }
 }

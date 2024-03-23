@@ -40,13 +40,13 @@ public class TileManager : MonoBehaviour
         return stopTile;
     }
 
-    public void CreateDestinationTile(Vector3Int position)
+    public void CreateDestinationTile(Vector3Int position, Destination destination)
     {
         GameObject newTile = new GameObject();
         newTile.transform.SetParent(transform);
         newTile.AddComponent(typeof(StopTile));
         StopTile stopTile = newTile.GetComponent<StopTile>();
-        stopTile.Init(position, tileGrid.CellToWorld(position));
+        stopTile.Init(position, tileGrid.CellToWorld(position), destination);
         gridInformation.SetPositionProperty(position, "DestinationTile", (UnityEngine.Object)newTile);
         tilemap.SetTile(stopTile.position, destinationTile);
     }

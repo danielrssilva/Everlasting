@@ -6,10 +6,21 @@ using UnityEngine.UI;
 public class Reward : MonoBehaviour
 {
     public string label;
-    public string value;
+    public float value;
     public RewardType type = RewardType.MAX_ENERGY;
 
-    public void SetData(string _value, RewardType _type)
+    public Reward()
+    {
+    }
+    
+    public Reward(float _value, RewardType _type)
+    {
+        label = _type.ToString();
+        value = _value;
+        type = _type;
+    }
+
+    public void SetData(float _value, RewardType _type)
     {
         label = _type.ToString();
         value = _value;

@@ -7,7 +7,7 @@ public class CartManager : MonoBehaviour
 {
     public static CartManager Instance;
 
-    public GameObject cart;
+    public Cart cart;
     private TrainManager trainManager;
 
     void Awake()
@@ -23,8 +23,9 @@ public class CartManager : MonoBehaviour
 
     public void SpawnCart()
     {
-        Instantiate(cart, GameObject.FindGameObjectWithTag("TrainController").transform);
-        trainManager.AddEmptyCart();
+        cart.SetCartNumber(trainManager.cartsTotal);
+        Cart instance = Instantiate(cart, GameObject.FindGameObjectWithTag("TrainController").transform);
+        trainManager.AddEmptyCart(instance);
     }
 
     public void ChangeCart(Cart _cart, CartInfo _cartInfo)

@@ -71,6 +71,9 @@ public class ManagerModal : MonoBehaviour
         workerCount.SetText(_cart.activeWorkers.ToString());
         workerTotal.SetText(_cart.maxWorkers.ToString());
 
+        // Consumption
+        consumptionValue.SetText(string.Format("-{0:N2}", TrainManager.Instance.cartsEnergyConsumption));
+
         // Production
         if (_cartType == CartType.FARM && !_cart.isDisabled && _cart.activeWorkers > 0)
         {
@@ -81,11 +84,10 @@ public class ManagerModal : MonoBehaviour
             }
             output += TrainManager.Instance.farmOutput * _cart.activeWorkers;
             outputValue.SetText(string.Format("{0:N1}", output));
+            consumptionValue.SetText(string.Format("-{0:N2}", TrainManager.Instance.cartsEnergyConsumption + TrainManager.Instance.farmFoodProductionEnergyCost));
         }
         outputIcon.sprite = _cart.info.productionOutputIcon;
 
-        // Consumption
-        consumptionValue.SetText(string.Format("-{0:N1}", TrainManager.Instance.cartsEnergyConsumption));
 
         // Cart specific renderer
         if (_cartType == CartType.EMPTY || _cartType == CartType.HOUSING || _cartType == CartType.REACTOR || _cartType == CartType.BATTERY)

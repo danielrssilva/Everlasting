@@ -13,9 +13,9 @@ public class TooltipSystem : MonoBehaviour
         current = this;
     }
 
-    public static void Show()
+    public static void Show(Destination destination)
     {
-        current.destinationTooltip.SetData();
+        current.destinationTooltip.SetData(destination);
         current.destinationTooltip.gameObject.SetActive(true);
     }
     public static void Hide()

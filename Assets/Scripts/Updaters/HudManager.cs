@@ -34,12 +34,16 @@ public class HudManager : MonoBehaviour
 
     [Space(5)]
     [Header("Food labels")]
+    public TMP_Text foodModalStorage;
+    public TMP_Text foodModalStorageEngine;
+    public TMP_Text foodModalStorageFarmCount;
+    public TMP_Text foodModalStorageFarm;
     public TMP_Text foodModalOutput;
     public TMP_Text foodModalFarmCart;
     public TMP_Text foodModalPassenger;
     public TMP_Text foodModalModifiers;
-    public TMP_Text foodModalTrackModifier;
     public TMP_Text foodModalEngineModifier;
+    public TMP_Text foodModalWeatherModifier;
     // Bottom
     public TMP_Text foodModalBottomCurrent;
     public TMP_Text foodModalBottomStorage;
@@ -50,16 +54,18 @@ public class HudManager : MonoBehaviour
     public TMP_Text energyModalStorageEngine;
     public TMP_Text energyModalStorageBatteryCount;
     public TMP_Text energyModalStorageBattery;
+    public TMP_Text energyModalStorageDestinationsCount;
+    public TMP_Text energyModalStorageDestinations;
     public TMP_Text energyModalOutput;
-    public TMP_Text energyModalOutputMainEngine;
     public TMP_Text energyModalOutputReactorCount;
     public TMP_Text energyModalOutputReactor;
-    public TMP_Text energyModalOutputProduction;
+    public TMP_Text energyModalOutputFarmCount;
+    public TMP_Text energyModalOutputFarm;
     public TMP_Text energyModalOutputCartWeight;
     public TMP_Text energyModalOutputSpeed;
     public TMP_Text energyModalModifiers;
     public TMP_Text energyModalModifiersEngine;
-    public TMP_Text energyModalModifiersTrack;
+    public TMP_Text energyModalModifiersWeather;
     // Bottom
     public TMP_Text energyModalBottomCurrent;
     public TMP_Text energyModalBottomStorage;
@@ -154,49 +160,55 @@ public class HudManager : MonoBehaviour
         cartModalReactors.SetText(trainManager.GetReactors().Count.ToString());
         cartModalExtraEngines.SetText(trainManager.GetExtraEngines().Count.ToString());
         cartModalWeightModifierCartCount.SetText(string.Format("[{0:N0}]", trainManager.GetCartsTotal().ToString()));
-        cartModalWeightModifier.SetText(string.Format("-{0:N1}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal()));
+        cartModalWeightModifier.SetText(string.Format("-{0:N2}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal()));
         cartModalSpeedReducerCartCount.SetText(string.Format("[{0:N0}]", trainManager.GetCartsTotal() / 5));
-        cartModalSpeedReducer.SetText(string.Format("-{0:N1}", (trainManager.GetCartsTotal() / 5) * trainManager.slowdownAmount));
-        cartModalExtraText.SetText(string.Format("Carts consume <b>-{0:N1}<size=4>kw/s</size></b> due to their wheight (even when disabled)<br><br>every <b>{1:N0}</b> carts reduce engine speed by <b>-{2:N0}<size=4>km/h</size></b><br><br>Battery carts count as <b>2</b> carts", trainManager.cartsEnergyConsumption, trainManager.cartsToSlowdown, trainManager.slowdownAmount));
+        cartModalSpeedReducer.SetText(string.Format("-{0:N0}", (trainManager.GetCartsTotal() / 5) * trainManager.slowdownAmount));
+        cartModalExtraText.SetText(string.Format("Carts consume <b>-{0:N2}<size=4>kw/s</size></b> due to their wheight (even when disabled)<br><br>every <b>{1:N0}</b> carts reduce engine speed by <b>-{2:N0}<size=4>km/h</size></b><br><br>Battery carts count as <b>2</b> carts", trainManager.cartsEnergyConsumption, trainManager.cartsToSlowdown, trainManager.slowdownAmount));
         cartModalTotalCart.SetText(trainManager.GetCartsTotal().ToString());
         // Modals  - Food labels
-        foodModalOutput.SetText(string.Format("{0:N1}", trainManager.GetFoodProduction()));
-        foodModalFarmCart.SetText(string.Format("{0:N1}", trainManager.GetFarmsOutputProduction()));
-        foodModalPassenger.SetText(string.Format("-{0:N1}", (trainManager.passengerFoodConsumption * trainManager.CurrentPassenger)));
-        //foodModalModifiers.SetText(string.Format("{0:N1}", (trainManager.farmOutput * trainManager.GetFarms().Count)));
-        //foodModalTrackModifier.SetText(string.Format("{0:N1}", (trainManager.farmOutput * trainManager.GetFarms().Count)));
+        foodModalStorage.SetText(string.Format("{0:N2}", trainManager.GetFoodStorage()));
+        foodModalStorageEngine.SetText(string.Format("{0:N2}", trainManager.foodStorage));
+        foodModalStorageFarmCount.SetText(string.Format("[{0:N0}]", trainManager.GetFarms().Count));
+        foodModalStorageFarm.SetText(string.Format("{0:N0}", trainManager.farmStorageModifier * trainManager.GetFarms().Count));
+        foodModalOutput.SetText(string.Format("{0:N2}", trainManager.GetFoodProduction()));
+        foodModalFarmCart.SetText(string.Format("{0:N2}", trainManager.GetFarmsOutputProduction()));
+        foodModalPassenger.SetText(string.Format("-{0:N2}", (trainManager.passengerFoodConsumption * trainManager.CurrentPassenger)));
+        //foodModalModifiers.SetText(string.Format("{0:N1}", trainManager.weatherFoodModifier));
         //foodModalEngineModifier.SetText(string.Format("{0:N1}", (trainManager.farmOutput * trainManager.GetFarms().Count)));
-        foodModalBottomCurrent.SetText(string.Format("{0:N1}", trainManager.CurrentFood));
-        foodModalBottomStorage.SetText(string.Format("{0:N1}", trainManager.GetFoodStorage()));
+        foodModalWeatherModifier.SetText(string.Format("{0:N0}%", trainManager.weatherFoodModifier * 100));
+        foodModalBottomCurrent.SetText(string.Format("{0:N2}", trainManager.CurrentFood));
+        foodModalBottomStorage.SetText(string.Format("{0:N2}", trainManager.GetFoodStorage()));
 
         // Modals  - Energy labels
-        energyModalStorage.SetText(string.Format("{0:N1}", trainManager.energyStorage));
-        energyModalStorageEngine.SetText(string.Format("{0:N1}", trainManager.GetEnergyStorage()));
+        energyModalStorage.SetText(string.Format("{0:N2}", trainManager.GetEnergyStorage()));
+        energyModalStorageEngine.SetText(string.Format("{0:N2}", trainManager.energyStorage));
         energyModalStorageBatteryCount.SetText(string.Format("[{0:N0}]", trainManager.GetBatteries().Count));
-        energyModalStorageBattery.SetText(string.Format("{0:N1}", trainManager.batteryModifier * trainManager.GetBatteries().Count));
-        energyModalOutput.SetText(string.Format("{0:N1}", trainManager.GetEnergyProduction()));
-        energyModalOutputMainEngine.SetText(string.Format("{0:N1}", trainManager.kwPerKmPerS));
+        energyModalStorageBattery.SetText(string.Format("{0:N0}", trainManager.batteryModifier * trainManager.GetBatteries().Count));
+        energyModalStorageDestinationsCount.SetText(string.Format("[{0:N0}]", trainManager.destinationsReached));
+        energyModalStorageDestinations.SetText(string.Format("{0:N2}", trainManager.stopsEnergyStorageModifier));
+        energyModalOutput.SetText(string.Format("{0:N2}", trainManager.GetEnergyProduction()));
         energyModalOutputReactorCount.SetText(string.Format("[{0:N0}]", trainManager.GetReactors().Count));
-        energyModalOutputReactor.SetText(string.Format("{0:N1}", trainManager.GetReactorsOutputProduction()));
-        energyModalOutputProduction.SetText(string.Format("-{0:N1}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal() + trainManager.cartsEnergyConsumption * trainManager.GetBatteries().Count));
-        energyModalOutputCartWeight.SetText(string.Format("-{0:N1}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal()));
-        energyModalOutputSpeed.SetText(string.Format("{0:N2}", trainManager.kwPerKmPerS));
-        //energyModalModifiers.SetText(string.Format("{0:N1}%", trainManager.reactorOutput * trainManager.GetReactors.Count));
+        energyModalOutputReactor.SetText(string.Format("{0:N2}", trainManager.GetReactorsOutputProduction()));
+        energyModalOutputFarmCount.SetText(string.Format("[{0:N0}]", trainManager.GetActiveFarmCount()));
+        energyModalOutputFarm.SetText(string.Format("-{0:N2}", trainManager.GetActiveFarmCount() * trainManager.farmFoodProductionEnergyCost));
+        energyModalOutputCartWeight.SetText(string.Format("-{0:N2}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal()));
+        energyModalOutputSpeed.SetText(string.Format("{0:N2}", trainManager.kwPerKmPerS * trainManager.CurrentSpeed));
+        //energyModalModifiers.SetText(string.Format("{0:N2}", trainManager.GetFarmsOutputProduction() * trainManager.weatherEnergyModifier));
         //energyModalModifiersEngine.SetText(string.Format("{0:N1}%", trainManager.reactorOutput * trainManager.GetReactors.Count));
-        //energyModalModifiersTrack.SetText(string.Format("{0:N1}%", trainManager.reactorOutput * trainManager.GetReactors.Count));
-        energyModalBottomCurrent.SetText(string.Format("{0:N1}", trainManager.CurrentEnergy));
-        energyModalBottomStorage.SetText(string.Format("{0:N1}", trainManager.GetEnergyStorage()));
+        energyModalModifiersWeather.SetText(string.Format("{0:N0}%", trainManager.weatherEnergyModifier * 100));
+        energyModalBottomCurrent.SetText(string.Format("{0:N2}", trainManager.CurrentEnergy));
+        energyModalBottomStorage.SetText(string.Format("{0:N2}", trainManager.GetEnergyStorage()));
 
         // Modals  - Engine labels
-        engineModalBase.SetText(string.Format("{0:N}", trainManager.initialSpeed));
-        engineModalCurrent.SetText(string.Format("{0:N}", trainManager.CurrentSpeed));
-        engineModalModifiers.SetText(string.Format("{0:N}", trainManager.cartsEnergyConsumption * trainManager.GetCartsTotal() + trainManager.extraEngineSpeedOutput * trainManager.GetExtraEngines().Count));
-        engineModalModifiersWeight.SetText(string.Format("-{0:N1}", trainManager.cartsEnergyConsumption * (trainManager.GetCartsTotal() / trainManager.cartsToSlowdown)));
-        engineModalModifiersExtraEngines.SetText(string.Format("{0:N1}", trainManager.extraEngineSpeedOutput * trainManager.GetExtraEngines().Count));
+        engineModalBase.SetText(string.Format("{0:N2}", trainManager.initialSpeed));
+        engineModalCurrent.SetText(string.Format("{0:N2}", trainManager.CurrentSpeed));
+        engineModalModifiers.SetText(string.Format("{0:N2}", trainManager.extraEngineSpeedOutput * trainManager.GetExtraEngines().Count - trainManager.cartsEnergyConsumption * (trainManager.GetCartsTotal() / trainManager.cartsToSlowdown)));
+        engineModalModifiersWeight.SetText(string.Format("-{0:N2}", trainManager.cartsEnergyConsumption * (trainManager.GetCartsTotal() / trainManager.cartsToSlowdown)));
+        engineModalModifiersExtraEngines.SetText(string.Format("{0:N2}", trainManager.extraEngineSpeedOutput * trainManager.GetExtraEngines().Count));
         //engineModalModifiersTrack.SetText(string.Format("{0:N}%", trainManager.CurrentSpeed));
         //engineModalModifiersEngine.SetText(string.Format("{0:N}%", trainManager.CurrentSpeed));
         engineModalModifiersDestinations.SetText(string.Format("{0:N2}", trainManager.destinationsSpeedModifier * trainManager.destinationsReached));
-        engineModalBottomSpeedEnergy.SetText(string.Format("{0:N}", trainManager.kwPerKmPerS));
+        engineModalBottomSpeedEnergy.SetText(string.Format("{0:N2}", trainManager.kwPerKmPerS));
 
         // Modals  - Passenger labels
         passengerModalActiveWorkers.SetText(trainManager.CurrentWorkers.ToString());
@@ -251,13 +263,13 @@ public class HudManager : MonoBehaviour
         passengerHousingTotal.SetText((5 * trainManager.GetHousingUnits().Count).ToString());
 
         currentFood.SetText(string.Format("{0:N1}", trainManager.CurrentFood));
-        foodProduction.SetText(string.Format("{0:N1}", trainManager.GetFoodProduction()));
+        foodProduction.SetText(string.Format("{0:N2}", trainManager.GetFoodProduction()));
 
         currentEnergy.SetText(string.Format("{0:N1}", trainManager.CurrentEnergy));
-        energyProduction.SetText(string.Format("{0:N1}", trainManager.GetEnergyProduction()));
+        energyProduction.SetText(string.Format("{0:N2}", trainManager.GetEnergyProduction()));
 
         baseSpeed.SetText(trainManager.initialSpeed.ToString());
-        speedEnergyProduction.SetText(string.Format("{0:N2}", trainManager.kwPerKmPerS));
+        speedEnergyProduction.SetText(string.Format("{0:N2}", trainManager.kwPerKmPerS + trainManager.kwPerKmPerS * trainManager.GetExtraEngines().Count));
         currentSpeed.SetText(string.Format("{0:N0}", trainManager.CurrentSpeed));
     }
 }

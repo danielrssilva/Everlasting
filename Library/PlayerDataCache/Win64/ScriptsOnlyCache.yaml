@@ -5,10 +5,13 @@ ScriptsOnlyBuild:
     - Cart
     - CartInfo
     - CartManager
+    - DecoupleModal
     - DestinationOption
     - DestinationTooltip
     - DestinationTooltipTrigger
+    - DestinationWeather
     - DragDrop
+    - ExtraDataContainer
     - ExtraReward
     - GameOverManager
     - HudManager
@@ -20,7 +23,6 @@ ScriptsOnlyBuild:
     - Reward
     - RewardPrefabData
     - RoguelikeManager
-    - Spawner
     - StopTooltip
     - StopTooltipSystem
     - StopTooltipTrigger
@@ -29,6 +31,8 @@ ScriptsOnlyBuild:
     - TilemapController
     - TooltipSystem
     - TrainManager
+    - TutorialCartData
+    - TutorialModalManager
     Unity.2D.Animation.Editor.dll:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.Animation.Runtime.dll:
@@ -38,22 +42,27 @@ ScriptsOnlyBuild:
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
     Unity.2D.Tilemap.Editor.dll:
+    - UnityEditor.Tilemaps.GridBrush
+    - UnityEditor.Tilemaps.GridBrushEditor
     - UnityEditor.Tilemaps.GridPaintingState
     - UnityEditor.Tilemaps.GridPaletteBrushes
     - UnityEditor.Tilemaps.GridPalettes
     - UnityEditor.Tilemaps.SceneViewGridManager
     - UnityEditor.Tilemaps.SceneViewOpenTilePaletteHelper
     - UnityEditor.Tilemaps.TileDragAndDropManager
+    - UnityEditor.Tilemaps.TilemapEditorToolPreferences
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
+    Unity.2D.Tilemap.Extras.Editor.dll:
+    - UnityEditor.Tilemaps.GameObjectBrush
+    - UnityEditor.Tilemaps.GroupBrush
+    - UnityEditor.Tilemaps.LineBrush
+    - UnityEditor.Tilemaps.RandomBrush
     Unity.2D.Tilemap.Extras.dll:
     - UnityEngine.Tilemaps.GridInformation
     Unity.PlasticSCM.Editor.dll:
     - Unity.PlasticSCM.Editor.PlasticWindow
     Unity.Postprocessing.Runtime.dll:
-    - UnityEngine.Rendering.PostProcessing.Bloom
-    - UnityEngine.Rendering.PostProcessing.DepthOfField
     - UnityEngine.Rendering.PostProcessing.PostProcessLayer
-    - UnityEngine.Rendering.PostProcessing.PostProcessProfile
     - UnityEngine.Rendering.PostProcessing.PostProcessResources
     - UnityEngine.Rendering.PostProcessing.PostProcessVolume
     Unity.Rider.Editor.dll:
@@ -94,13 +103,9 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.VerticalLayoutGroup
   serializedClasses:
     Unity.Postprocessing.Runtime:
-    - UnityEngine.Rendering.PostProcessing.BoolParameter
-    - UnityEngine.Rendering.PostProcessing.ColorParameter
     - UnityEngine.Rendering.PostProcessing.FastApproximateAntialiasing
-    - UnityEngine.Rendering.PostProcessing.FloatParameter
     - UnityEngine.Rendering.PostProcessing.Fog
     - UnityEngine.Rendering.PostProcessing.HistogramMonitor
-    - UnityEngine.Rendering.PostProcessing.KernelSizeParameter
     - UnityEngine.Rendering.PostProcessing.LightMeterMonitor
     - UnityEngine.Rendering.PostProcessing.PostProcessDebugLayer
     - UnityEngine.Rendering.PostProcessing.PostProcessDebugLayer/OverlaySettings
@@ -109,7 +114,6 @@ ScriptsOnlyBuild:
     - UnityEngine.Rendering.PostProcessing.PostProcessResources/Shaders
     - UnityEngine.Rendering.PostProcessing.SubpixelMorphologicalAntialiasing
     - UnityEngine.Rendering.PostProcessing.TemporalAntialiasing
-    - UnityEngine.Rendering.PostProcessing.TextureParameter
     - UnityEngine.Rendering.PostProcessing.VectorscopeMonitor
     - UnityEngine.Rendering.PostProcessing.WaveformMonitor
     Unity.TextMeshPro:
@@ -175,18 +179,24 @@ ScriptsOnlyBuild:
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
-  - assembly: Assembly-CSharp
-    fullTypeName: ManagerModal
-    methodName: ConstructCart
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
+  - assembly: UnityEngine.CoreModule
+    fullTypeName: UnityEngine.GameObject
+    methodName: SetActive
+  - assembly: Assembly-CSharp
+    fullTypeName: DecoupleModal
+    methodName: KeepPassengers
   - assembly: Assembly-CSharp
     fullTypeName: MainScript
     methodName: MainMenu
   - assembly: UnityEngine.UI
     fullTypeName: UnityEngine.UI.Image
     methodName: set_overrideSprite
+  - assembly: UnityEngine.CoreModule
+    fullTypeName: UnityEngine.GameObject
+    methodName: SetActive
   - assembly: Assembly-CSharp
     fullTypeName: TrainManager
     methodName: Play
@@ -194,11 +204,17 @@ ScriptsOnlyBuild:
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
   - assembly: Assembly-CSharp
+    fullTypeName: TutorialModalManager
+    methodName: RightButtonClick
+  - assembly: Assembly-CSharp
     fullTypeName: ManagerModal
     methodName: AddWorker
   - assembly: Assembly-CSharp
     fullTypeName: ManagerModal
     methodName: ToggleDisable
+  - assembly: Assembly-CSharp
+    fullTypeName: TutorialModalManager
+    methodName: LeftButtonClick
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
@@ -283,9 +299,9 @@ ScriptsOnlyBuild:
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
-  - assembly: UnityEngine.CoreModule
-    fullTypeName: UnityEngine.GameObject
-    methodName: SetActive
+  - assembly: Assembly-CSharp
+    fullTypeName: DecoupleModal
+    methodName: ConfirmDecouple
   - assembly: Assembly-CSharp
     fullTypeName: ManagerModal
     methodName: ConstructCart
@@ -331,12 +347,15 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: TrainManager
     methodName: MainMenu
-  - assembly: Assembly-CSharp
-    fullTypeName: ManagerModal
-    methodName: ConstructCart
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
+  - assembly: UnityEngine.CoreModule
+    fullTypeName: UnityEngine.GameObject
+    methodName: SetActive
+  - assembly: Assembly-CSharp
+    fullTypeName: DecoupleModal
+    methodName: LeavePassengers
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
@@ -378,81 +397,85 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1690}
     - Class: 114
-      Script: {instanceID: 1966}
+      Script: {instanceID: 1964}
     - Class: 114
-      Script: {instanceID: 2152}
+      Script: {instanceID: 2150}
+    - Class: 114
+      Script: {instanceID: 2484}
     - Class: 114
       Script: {instanceID: 2720}
     - Class: 114
-      Script: {instanceID: 3008}
+      Script: {instanceID: 3010}
     - Class: 114
-      Script: {instanceID: 3274}
+      Script: {instanceID: 3276}
     - Class: 114
-      Script: {instanceID: 3634}
+      Script: {instanceID: 3636}
     - Class: 114
-      Script: {instanceID: 3692}
+      Script: {instanceID: 3694}
     - Class: 114
-      Script: {instanceID: 3740}
+      Script: {instanceID: 3704}
     - Class: 114
-      Script: {instanceID: 3820}
+      Script: {instanceID: 3744}
     - Class: 114
-      Script: {instanceID: 3852}
+      Script: {instanceID: 3824}
     - Class: 114
-      Script: {instanceID: 4212}
+      Script: {instanceID: 3856}
     - Class: 114
-      Script: {instanceID: 4234}
+      Script: {instanceID: 4236}
     - Class: 114
-      Script: {instanceID: 4352}
+      Script: {instanceID: 4354}
     - Class: 114
-      Script: {instanceID: 4652}
+      Script: {instanceID: 4654}
     - Class: 114
-      Script: {instanceID: 5118}
+      Script: {instanceID: 5122}
     - Class: 114
-      Script: {instanceID: 5324}
+      Script: {instanceID: 5290}
     - Class: 114
-      Script: {instanceID: 5644}
+      Script: {instanceID: 5328}
     - Class: 114
-      Script: {instanceID: 5824}
+      Script: {instanceID: 5648}
     - Class: 114
-      Script: {instanceID: 5838}
+      Script: {instanceID: 5828}
     - Class: 114
       Script: {instanceID: 5842}
     - Class: 114
-      Script: {instanceID: 5892}
+      Script: {instanceID: 5846}
     - Class: 114
-      Script: {instanceID: 6072}
+      Script: {instanceID: 6074}
     - Class: 114
-      Script: {instanceID: 6232}
+      Script: {instanceID: 6234}
     - Class: 114
-      Script: {instanceID: 6300}
+      Script: {instanceID: 6648}
     - Class: 114
-      Script: {instanceID: 6646}
+      Script: {instanceID: 6748}
     - Class: 114
-      Script: {instanceID: 6950}
+      Script: {instanceID: 6952}
     - Class: 114
-      Script: {instanceID: 7168}
+      Script: {instanceID: 7166}
     - Class: 114
-      Script: {instanceID: 7202}
+      Script: {instanceID: 7200}
     - Class: 114
-      Script: {instanceID: 7332}
+      Script: {instanceID: 7330}
     - Class: 114
-      Script: {instanceID: 7564}
+      Script: {instanceID: 7562}
     - Class: 114
-      Script: {instanceID: 7582}
+      Script: {instanceID: 7580}
     - Class: 114
-      Script: {instanceID: 7850}
+      Script: {instanceID: 7848}
     - Class: 114
-      Script: {instanceID: 8024}
+      Script: {instanceID: 8022}
     - Class: 114
-      Script: {instanceID: 8058}
+      Script: {instanceID: 8056}
     - Class: 114
-      Script: {instanceID: 8116}
+      Script: {instanceID: 8114}
     - Class: 114
-      Script: {instanceID: 8126}
+      Script: {instanceID: 8124}
+    - Class: 114
+      Script: {instanceID: 8318}
     - Class: 114
       Script: {instanceID: 8488}
     - Class: 114
-      Script: {instanceID: 8910}
+      Script: {instanceID: 8600}
     - Class: 114
       Script: {instanceID: 8930}
     - Class: 114
@@ -469,6 +492,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 9702}
     - Class: 114
       Script: {instanceID: 9888}
+    - Class: 114
+      Script: {instanceID: 30238}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -515,27 +540,27 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1690}
     - Class: 114
-      Script: {instanceID: 2444}
+      Script: {instanceID: 2442}
     - Class: 114
-      Script: {instanceID: 3008}
+      Script: {instanceID: 3010}
     - Class: 114
-      Script: {instanceID: 3274}
+      Script: {instanceID: 3276}
     - Class: 114
-      Script: {instanceID: 3634}
+      Script: {instanceID: 3636}
     - Class: 114
-      Script: {instanceID: 3872}
+      Script: {instanceID: 3876}
     - Class: 114
-      Script: {instanceID: 4960}
+      Script: {instanceID: 4964}
     - Class: 114
-      Script: {instanceID: 5286}
+      Script: {instanceID: 5290}
     - Class: 114
-      Script: {instanceID: 6232}
+      Script: {instanceID: 6234}
     - Class: 114
-      Script: {instanceID: 6950}
+      Script: {instanceID: 6952}
     - Class: 114
-      Script: {instanceID: 7168}
+      Script: {instanceID: 7166}
     - Class: 114
-      Script: {instanceID: 7582}
+      Script: {instanceID: 7580}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -589,12 +614,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline
     namespaceName: UnityEngine.Timeline
     className: SignalAsset
-  - hash:
-      serializedVersion: 2
-      Hash: 3b36a0d96e2624940a5b77d3a6227f9e
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: RewardTile
   - hash:
       serializedVersion: 2
       Hash: 8dff8e9853297d341afa0c11f9091b59
@@ -675,6 +694,12 @@ ScriptsOnlyBuild:
     className: UnityOnPointerUpMessageListener
   - hash:
       serializedVersion: 2
+      Hash: daeae6b68826e3da379d57dee778c0bb
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: TutorialCartData
+  - hash:
+      serializedVersion: 2
       Hash: 00bcfff150a932126a4ea840d0861a6b
     assemblyName: Unity.2D.SpriteShape.Runtime
     namespaceName: UnityEngine.U2D
@@ -721,6 +746,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.Animation.Runtime
     namespaceName: UnityEngine.U2D.Animation
     className: SkeletonAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 24dcbbe76547e27056c7221aae344bbc
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: DestinationWeatherData
   - hash:
       serializedVersion: 2
       Hash: 1321993db8249e1e05e1e0492b2bbdc3
@@ -861,10 +892,16 @@ ScriptsOnlyBuild:
     className: Button
   - hash:
       serializedVersion: 2
-      Hash: f85c51d403b98bab0f931bfbea431114
+      Hash: ceb53ee8ae97dc89b17ca95917b8d5a9
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: GameOverManager
+  - hash:
+      serializedVersion: 2
+      Hash: 129a7aa30f6b7c29daa6a31d41bd5b8d
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: TutorialModalManager
   - hash:
       serializedVersion: 2
       Hash: d90629714fa6b0145fcaffc87f5c6559
@@ -945,12 +982,6 @@ ScriptsOnlyBuild:
     className: UnityOnSelectMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 7f486a0864e065448e5edbe6b5b4f11a
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: SpeedModifiers
-  - hash:
-      serializedVersion: 2
       Hash: 5b8b7230ad968399f6726aa1269dcdcb
     assemblyName: UnityEngine.TestRunner
     namespaceName: UnityEngine.TestTools.TestRunner.Callbacks
@@ -999,7 +1030,7 @@ ScriptsOnlyBuild:
     className: AnimationTrack
   - hash:
       serializedVersion: 2
-      Hash: 785163cc0069bd9b660910b7f5ca75cc
+      Hash: ccb18538a2d1b5d15a63369635075425
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: DestinationTooltip
@@ -1057,6 +1088,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Postprocessing.Runtime
     namespaceName: UnityEngine.Rendering.PostProcessing
     className: PostProcessEffectSettings
+  - hash:
+      serializedVersion: 2
+      Hash: e5f8716e3a08747007c398b8cd0e9aad
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: DestinationPenaltyData
   - hash:
       serializedVersion: 2
       Hash: 4718916586b3818eb69bf65df61f0f3a
@@ -1173,7 +1210,7 @@ ScriptsOnlyBuild:
     className: UnityOnPointerClickMessageListener
   - hash:
       serializedVersion: 2
-      Hash: cb4a6da3678847aef9bb379a9c772a9e
+      Hash: 7fb2278bf49ad496438c2673db6ae6a2
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: StopTile
@@ -1221,7 +1258,7 @@ ScriptsOnlyBuild:
     className: StopUpdater
   - hash:
       serializedVersion: 2
-      Hash: 45b266f174494276eb7daadd76da021a
+      Hash: 078a2282dccd6336847993432969d5f5
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: TrainManager
@@ -1243,12 +1280,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Postprocessing.Runtime
     namespaceName: UnityEngine.Rendering.PostProcessing
     className: AmbientOcclusion
-  - hash:
-      serializedVersion: 2
-      Hash: e02c26902db289216ec73dfec2eb53bd
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: Spawner
   - hash:
       serializedVersion: 2
       Hash: db9b308769d19e1f9e161df0392c23ca
@@ -1377,16 +1408,16 @@ ScriptsOnlyBuild:
     className: Text
   - hash:
       serializedVersion: 2
-      Hash: 43e9731dd0e681b757608ea9a786a913
+      Hash: 7ad192b13387c0f72002118468cf2bba
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: DestinationOption
   - hash:
       serializedVersion: 2
-      Hash: 68ee6748293f1529c5788702387048b5
+      Hash: 6858275eeb174d9a40409d4af925def5
     assemblyName: Assembly-CSharp
     namespaceName: 
-    className: LogicScript
+    className: DecoupleModal
   - hash:
       serializedVersion: 2
       Hash: 1ce63d97d1ca25cba2d91d5f32fd5f79
@@ -1399,18 +1430,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
     className: CanvasScaler
-  - hash:
-      serializedVersion: 2
-      Hash: d5810750dfa1c5bbebe6fe2ea34b99a9
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: Energy
-  - hash:
-      serializedVersion: 2
-      Hash: 29e11b13e6fe7831ae031f7edb7a4afd
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: Speed
   - hash:
       serializedVersion: 2
       Hash: ef38c1407dba8c1f5d69f5db61a694fe
@@ -1437,7 +1456,7 @@ ScriptsOnlyBuild:
     className: DragDrop
   - hash:
       serializedVersion: 2
-      Hash: dc8593d4bfa37e07ec90057da80b51db
+      Hash: f4cfee1354e26a9bb6942d6e622552db
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Destination
@@ -1461,7 +1480,7 @@ ScriptsOnlyBuild:
     className: UnityOnTriggerStay2DMessageListener
   - hash:
       serializedVersion: 2
-      Hash: ffbb0bbaa99989917dbd2d389667fccd
+      Hash: 81c36b6f2bbeb6a2c83426838329c618
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: HudManager
@@ -1515,7 +1534,7 @@ ScriptsOnlyBuild:
     className: TextContainer
   - hash:
       serializedVersion: 2
-      Hash: 929130329b412d7ef4977b6633d5e4be
+      Hash: 638196fe5d1c59f3b528298dd2a58b7f
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Cart
@@ -1617,6 +1636,12 @@ ScriptsOnlyBuild:
     className: PositionAsUV1
   - hash:
       serializedVersion: 2
+      Hash: 0d1c56eeb796351d3a985550fccfba43
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: DestinationWeather
+  - hash:
+      serializedVersion: 2
       Hash: 6a0b5b415c00f783202fd1ae2d556cb2
     assemblyName: Unity.Timeline
     namespaceName: UnityEngine.Timeline
@@ -1665,6 +1690,12 @@ ScriptsOnlyBuild:
     className: Dropdown
   - hash:
       serializedVersion: 2
+      Hash: 5653ca058e6e0a079f50f2debf6d6e8a
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: ExtraDataContainer
+  - hash:
+      serializedVersion: 2
       Hash: fd7983aadddd0b1b9f4ce82ed537bde5
     assemblyName: Unity.2D.SpriteShape.Runtime
     namespaceName: UnityEngine.U2D
@@ -1681,12 +1712,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core
     namespaceName: Unity.VisualScripting
     className: UnityOnMoveMessageListener
-  - hash:
-      serializedVersion: 2
-      Hash: 408f39aaa667060f10c83f09979cc4fe
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: Food
   - hash:
       serializedVersion: 2
       Hash: e20a6de5f1fd1dfae6f1186e8f77c3d9
@@ -1713,7 +1738,7 @@ ScriptsOnlyBuild:
     className: PostProcessDebug
   - hash:
       serializedVersion: 2
-      Hash: aec58d3c103cf2fd4701812294ba1b27
+      Hash: ab0d931068e30d4ff246c75fcd8083af
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: CartManager
@@ -1809,13 +1834,13 @@ ScriptsOnlyBuild:
     className: StopTooltipTrigger
   - hash:
       serializedVersion: 2
-      Hash: d0d4046b6a3fad54a6e99d5d518df445
+      Hash: 4b782987b20580b0a6cffa3a46092885
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: StopTooltip
   - hash:
       serializedVersion: 2
-      Hash: 823adf7317db5ed3cbd612e5fefd4b1c
+      Hash: 53e75fae67cc9a6940cd148745e1c7e0
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: Reward
@@ -1861,12 +1886,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: RoguelikeManager
-  - hash:
-      serializedVersion: 2
-      Hash: 04234f935ef363e3df4ffba520b22074
-    assemblyName: Assembly-CSharp
-    namespaceName: 
-    className: Passenger
   - hash:
       serializedVersion: 2
       Hash: 00eef92bf387da2c9009267123d9d674

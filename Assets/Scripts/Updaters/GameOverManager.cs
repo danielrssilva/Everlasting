@@ -66,12 +66,12 @@ public class GameOverManager : MonoBehaviour
         destinationsReached.SetText(string.Format("Destinations reached <b><color=#A55757>{0:N0}</color></b>", trainManager.destinationsReached));
 
         // Energy
-        energyOutput.SetText(string.Format("Storage <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.CurrentEnergy, trainManager.GetEnergyStorage()));
-        energyStorage.SetText(string.Format("Output <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.GetEnergyProduction(), trainManager.maxEnergyProduction));
+        energyOutput.SetText(string.Format("Storage <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.CurrentEnergy, trainManager.maxEnergyProduction));
+        energyStorage.SetText(string.Format("Output <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.GetEnergyProduction(), trainManager.CurrentEnergyStorage));
 
         // Food
-        foodOutput.SetText(string.Format("Storage <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.CurrentFood, trainManager.GetFoodStorage()));
-        foodStorage.SetText(string.Format("Output <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.GetFoodProduction(), trainManager.maxFoodProduction));
+        foodOutput.SetText(string.Format("Storage <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.CurrentFood, trainManager.maxFoodProduction));
+        foodStorage.SetText(string.Format("Output <b><color=#A55757>{0:N1}</color></b> / max <b><color=#A55757>{1:N1}</color></b>", trainManager.GetFoodProduction(), trainManager.CurrentFoodStorage));
 
         // Population
         passengerCount.SetText(string.Format("Passengers <b><color=#A55757>{0:N0}</color></b> / max <b><color=#A55757>{1:N0}</color></b>", trainManager.CurrentPassenger, trainManager.maxPassengers));
